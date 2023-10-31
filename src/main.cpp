@@ -111,5 +111,13 @@ void loop() {
     }
     Serial.print("  ");
     UTHAPS::println("M1 >> ", canMasterToIF.receive_state, "M2 >> ", canMasterToCenter.receive_state, "IF >> ", canIFtoMaster.receive_state, "LEFT >> ", canLeftToMaster.receive_state, "CENTER >> ", canCenterToMaster.receive_state, "RIGHT >> ", canRightToMaster.receive_state);
-    // canMasterToIF.receive_state 
+    
+    
+    // RESET
+    canMasterToIF.receive_state = false;
+    canMasterToCenter.receive_state = false;
+    canIFtoMaster.receive_state = false;
+    canLeftToMaster.receive_state = false;
+    canCenterToMaster.receive_state = false;
+    canRightToMaster.receive_state = false;
 }

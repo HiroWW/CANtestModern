@@ -33,7 +33,7 @@ void setup() {
 
 
 
-#define CURRENT_FLAG LEFT
+#define CURRENT_FLAG MASTER1
 
 
 
@@ -74,7 +74,7 @@ void loop() {
             // LEFTの場合の処理
             // Serial.println("Executing LEFT logic...");
             canLeftToMaster.receive_state = 1;
-            canpack.CANsend(CAN_ID_RIGHTTOMASTER, &canLeftToMaster);
+            canpack.CANsend(CAN_ID_LEFTTOMASTER, &canLeftToMaster);
             canpack.CANread({CAN_ID_MASTERTOIF, CAN_ID_MASTERTOCENTER, CAN_ID_IFTOMASTER, CAN_ID_CENTERTOMASTER, CAN_ID_RIGHTTOMASTER});
             break;
         case CENTER:

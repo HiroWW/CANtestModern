@@ -71,7 +71,7 @@ void setup() {
 
 
 
-#define CURRENT_FLAG RIGHT
+#define CURRENT_FLAG DEBUG
 
 
 
@@ -141,6 +141,7 @@ void loop() {
             canIFtoMaster.receive_state = 1;
             canpack.CANsend(CAN_ID_IFTOMASTER,&canIFtoMaster);
             canpack.CANread({CAN_ID_MASTERTOIF, CAN_ID_MASTERTOCENTER, CAN_ID_LEFTTOMASTER, CAN_ID_CENTERTOMASTER, CAN_ID_RIGHTTOMASTER});
+            break;
         default:
             // 定義されていないフラグの場合の処理
             Serial.println("Unknown flag!");
@@ -160,6 +161,7 @@ void loop() {
             case LEFT: Serial.print("LEFT"); break;
             case CENTER: Serial.print("CENTER"); break;
             case RIGHT: Serial.print("RIGHT"); break;
+            case DEBUG: Serial.print("DEBUG"); break;
             default: Serial.print("Unknown"); break;
         }
         Serial.print("  ");
@@ -169,11 +171,11 @@ void loop() {
     loopCount ++;
     
     // RESET
-    // canMasterToIF.receive_state = false;
-    // canMasterToCenter.receive_state = false;
-    // canIFtoMaster.receive_state = false;
-    // canLeftToMaster.receive_state = false;
-    // canCenterToMaster.receive_state = false;
-    // canRightToMaster.receive_state = false;
+    canMasterToIF.receive_state = false;
+    canMasterToCenter.receive_state = false;
+    canIFtoMaster.receive_state = false;
+    canLeftToMaster.receive_state = false;
+    canCenterToMaster.receive_state = false;
+    canRightToMaster.receive_state = false;
     // delay(1000);
 }

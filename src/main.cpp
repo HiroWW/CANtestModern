@@ -70,7 +70,7 @@ void setup() {
 
 
 
-#define CURRENT_FLAG RIGHT
+#define CURRENT_FLAG MASTER1
 
 
 
@@ -141,24 +141,24 @@ void loop() {
     // 現在のフラグの名前をシリアルで出力
     Serial.print("Current flag is: ");
     switch (CURRENT_FLAG) {
-        case MASTER1: UTHAPS::print("MASTER1"); break;
-        case MASTER2: UTHAPS::print("MASTER2"); break;
-        case IF: UTHAPS::print("IF"); break;
-        case LEFT: UTHAPS::print("LEFT"); break;
-        case CENTER: UTHAPS::print("CENTER"); break;
+        case MASTER1: Serial.print("MASTER1"); break;
+        case MASTER2: Serial.print("MASTER2"); break;
+        case IF: Serial.print("IF"); break;
+        case LEFT: Serial.print("LEFT"); break;
+        case CENTER: Serial.print("CENTER"); break;
         case RIGHT: Serial.print("RIGHT"); break;
-        default: UTHAPS::print("Unknown"); break;
+        default: Serial.print("Unknown"); break;
     }
     Serial.print("  ");
     UTHAPS::println("M1 >> ", canMasterToIF.receive_state, "M2 >> ", canMasterToCenter.receive_state, "IF >> ", canIFtoMaster.receive_state, "LEFT >> ", canLeftToMaster.receive_state, "CENTER >> ", canCenterToMaster.receive_state, "RIGHT >> ", canRightToMaster.receive_state);
     
     
     // RESET
-    canMasterToIF.receive_state = false;
-    canMasterToCenter.receive_state = false;
-    canIFtoMaster.receive_state = false;
-    canLeftToMaster.receive_state = false;
-    canCenterToMaster.receive_state = false;
-    canRightToMaster.receive_state = false;
+    // canMasterToIF.receive_state = false;
+    // canMasterToCenter.receive_state = false;
+    // canIFtoMaster.receive_state = false;
+    // canLeftToMaster.receive_state = false;
+    // canCenterToMaster.receive_state = false;
+    // canRightToMaster.receive_state = false;
     // delay(1000);
 }

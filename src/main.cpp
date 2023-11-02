@@ -70,7 +70,7 @@ void setup() {
 
 
 
-#define CURRENT_FLAG MASTER1
+#define CURRENT_FLAG RIGHT
 
 
 
@@ -82,7 +82,7 @@ void setup() {
 // =======================================================
 
 
-
+int loopCount = 0;
 void loop() {
     // フラグに応じた処理
     switch (CURRENT_FLAG) {
@@ -136,22 +136,26 @@ void loop() {
     }
 
     // 現在のフラグをシリアルで出力
-    Serial.print("--");
-    UTHAPS::println("=======================================================================================================================================");
-    // 現在のフラグの名前をシリアルで出力
-    Serial.print("Current flag is: ");
-    switch (CURRENT_FLAG) {
-        case MASTER1: Serial.print("MASTER1"); break;
-        case MASTER2: Serial.print("MASTER2"); break;
-        case IF: Serial.print("IF"); break;
-        case LEFT: Serial.print("LEFT"); break;
-        case CENTER: Serial.print("CENTER"); break;
-        case RIGHT: Serial.print("RIGHT"); break;
-        default: Serial.print("Unknown"); break;
+    if (loopCount % 10 == 0){
+
+        Serial.print("--");
+        UTHAPS::println("=======================================================================================================================================");
+        // 現在のフラグの名前をシリアルで出力
+        Serial.print("Current flag is: ");
+        switch (CURRENT_FLAG) {
+            case MASTER1: Serial.print("MASTER1"); break;
+            case MASTER2: Serial.print("MASTER2"); break;
+            case IF: Serial.print("IF"); break;
+            case LEFT: Serial.print("LEFT"); break;
+            case CENTER: Serial.print("CENTER"); break;
+            case RIGHT: Serial.print("RIGHT"); break;
+            default: Serial.print("Unknown"); break;
+        }
+        Serial.print("  ");
+        UTHAPS::println("M1 >> ", canMasterToIF.receive_state, "M2 >> ", canMasterToCenter.receive_state, "IF >> ", canIFtoMaster.receive_state, "LEFT >> ", canLeftToMaster.receive_state, "CENTER >> ", canCenterToMaster.receive_state, "RIGHT >> ", canRightToMaster.receive_state);
+        
     }
-    Serial.print("  ");
-    UTHAPS::println("M1 >> ", canMasterToIF.receive_state, "M2 >> ", canMasterToCenter.receive_state, "IF >> ", canIFtoMaster.receive_state, "LEFT >> ", canLeftToMaster.receive_state, "CENTER >> ", canCenterToMaster.receive_state, "RIGHT >> ", canRightToMaster.receive_state);
-    
+    loopCount ++;
     
     // RESET
     // canMasterToIF.receive_state = false;

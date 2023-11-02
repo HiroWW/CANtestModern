@@ -131,16 +131,19 @@ void loop() {
             break;
         case DEBUG:
             // DEBUG MODE FOR 2 BOARDS COM
-            // SEND M1 M2 IF
+            // SEND M1 M2 IF L C 
             canMasterToIF.receive_state = 1;
             canpack.CANsend(CAN_ID_MASTERTOIF, &canMasterToIF);
-            canpack.CANread({CAN_ID_MASTERTOCENTER, CAN_ID_IFTOMASTER, CAN_ID_LEFTTOMASTER, CAN_ID_CENTERTOMASTER, CAN_ID_RIGHTTOMASTER});
             canMasterToCenter.receive_state = 1;
             canpack.CANsend(CAN_ID_MASTERTOCENTER, &canMasterToCenter);
-            canpack.CANread({CAN_ID_MASTERTOIF, CAN_ID_IFTOMASTER, CAN_ID_LEFTTOMASTER, CAN_ID_CENTERTOMASTER, CAN_ID_RIGHTTOMASTER});
             canIFtoMaster.receive_state = 1;
             canpack.CANsend(CAN_ID_IFTOMASTER,&canIFtoMaster);
-            canpack.CANread({CAN_ID_MASTERTOIF, CAN_ID_MASTERTOCENTER, CAN_ID_LEFTTOMASTER, CAN_ID_CENTERTOMASTER, CAN_ID_RIGHTTOMASTER});
+            canLeftToMaster.receive_state = 1;
+            canpack.CANsend(CAN_ID_LEFTTOMASTER, &canLeftToMaster);
+            canCenterToMaster.receive_state = 1;
+            canpack.CANsend(CAN_ID_CENTERTOMASTER, &canCenterToMaster);
+
+            canpack.CANread({CAN_ID_RIGHTTOMASTER});
             break;
         default:
             // 定義されていないフラグの場合の処理

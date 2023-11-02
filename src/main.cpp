@@ -58,6 +58,7 @@ void setup() {
 #define LEFT 4
 #define CENTER 5
 #define RIGHT 6
+#define DEBUG 7
 
 
 
@@ -126,9 +127,20 @@ void loop() {
             // Serial.println("Executing RIGHT logic...");
             canRightToMaster.receive_state = 1;
             canpack.CANsend(CAN_ID_RIGHTTOMASTER, &canRightToMaster);
-            // Serial.println("SEND IS FINISHED!");
             canpack.CANread({CAN_ID_MASTERTOIF, CAN_ID_MASTERTOCENTER, CAN_ID_LEFTTOMASTER, CAN_ID_CENTERTOMASTER, CAN_ID_IFTOMASTER});
             break;
+        case DEBUG:
+            // DEBUG MODE FOR 2 BOARDS COM
+            // SEND M1 M2 IF
+            canMasterToIF.receive_state = 1;
+            canpack.CANsend(CAN_ID_MASTERTOIF, &canMasterToIF);
+            canpack.CANread({CAN_ID_MASTERTOCENTER, CAN_ID_IFTOMASTER, CAN_ID_LEFTTOMASTER, CAN_ID_CENTERTOMASTER, CAN_ID_RIGHTTOMASTER});
+            canMasterToCenter.receive_state = 1;
+            canpack.CANsend(CAN_ID_MASTERTOCENTER, &canMasterToCenter);
+            canpack.CANread({CAN_ID_MASTERTOIF, CAN_ID_IFTOMASTER, CAN_ID_LEFTTOMASTER, CAN_ID_CENTERTOMASTER, CAN_ID_RIGHTTOMASTER});
+            canIFtoMaster.receive_state = 1;
+            canpack.CANsend(CAN_ID_IFTOMASTER,&canIFtoMaster);
+            canpack.CANread({CAN_ID_MASTERTOIF, CAN_ID_MASTERTOCENTER, CAN_ID_LEFTTOMASTER, CAN_ID_CENTERTOMASTER, CAN_ID_RIGHTTOMASTER});
         default:
             // 定義されていないフラグの場合の処理
             Serial.println("Unknown flag!");

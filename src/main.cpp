@@ -71,7 +71,7 @@ void setup() {
 
 
 
-#define CURRENT_FLAG DEBUG
+#define CURRENT_FLAG MASTER1
 
 
 
@@ -152,7 +152,7 @@ void loop() {
     }
 
     // 現在のフラグをシリアルで出力
-    if (loopCount % 10 == 0){
+    if (loopCount % 1 == 0){
 
         UTHAPS::println("=======================================================================================================================================");
         // 現在のフラグの名前をシリアルで出力
@@ -175,10 +175,10 @@ void loop() {
     
     // RESET
     canMasterToIF.receive_state = false;
-    canMasterToCenter.receive_state = false;
+    // canMasterToCenter.receive_state = false;
     canIFtoMaster.receive_state = false;
     canLeftToMaster.receive_state = false;
     canCenterToMaster.receive_state = false;
-    canRightToMaster.receive_state = false;
+    // canRightToMaster.receive_state = false;
     // delay(1000);
 }

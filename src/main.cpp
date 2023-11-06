@@ -71,7 +71,7 @@ void setup() {
 
 
 
-#define CURRENT_FLAG MASTER1
+#define CURRENT_FLAG RIGHT
 
 
 
@@ -86,6 +86,11 @@ void setup() {
 int loopCount = 0;
 void loop() {
     // フラグに応じた処理
+    // Serial.println(micros());
+    uint32_t startTime = micros();
+    while (micros() - startTime < 15000){
+    }
+    // Serial.println(micros());
     switch (CURRENT_FLAG) {
         case MASTER1:
             // MASTER1の場合の処理
@@ -175,10 +180,10 @@ void loop() {
     
     // RESET
     canMasterToIF.receive_state = false;
-    // canMasterToCenter.receive_state = false;
+    canMasterToCenter.receive_state = false;
     canIFtoMaster.receive_state = false;
     canLeftToMaster.receive_state = false;
     canCenterToMaster.receive_state = false;
-    // canRightToMaster.receive_state = false;
+    canRightToMaster.receive_state = false;
     // delay(1000);
 }

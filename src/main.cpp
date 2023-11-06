@@ -27,27 +27,6 @@ uint8_t extra_write_buffer_7[extra_buffer_size];
 uint8_t extra_write_buffer_8[extra_buffer_size];
 
 
-void setup() {
-    Serial1.addMemoryForRead(extra_read_buffer_1, extra_buffer_size);
-    Serial2.addMemoryForRead(extra_read_buffer_2, extra_buffer_size);
-    Serial3.addMemoryForRead(extra_read_buffer_3, extra_buffer_size);
-    Serial4.addMemoryForRead(extra_read_buffer_4, extra_buffer_size);
-    Serial5.addMemoryForRead(extra_read_buffer_5, extra_buffer_size);
-    Serial6.addMemoryForRead(extra_read_buffer_6, extra_buffer_size);
-    Serial7.addMemoryForRead(extra_read_buffer_7, extra_buffer_size);
-    Serial8.addMemoryForRead(extra_read_buffer_8, extra_buffer_size);
-    Serial1.addMemoryForWrite(extra_write_buffer_1, extra_buffer_size);
-    Serial2.addMemoryForWrite(extra_write_buffer_2, extra_buffer_size);
-    Serial3.addMemoryForWrite(extra_write_buffer_3, extra_buffer_size);
-    Serial4.addMemoryForWrite(extra_write_buffer_4, extra_buffer_size);
-    Serial5.addMemoryForWrite(extra_write_buffer_5, extra_buffer_size);
-    Serial6.addMemoryForWrite(extra_write_buffer_6, extra_buffer_size);
-    Serial7.addMemoryForWrite(extra_write_buffer_7, extra_buffer_size);
-    Serial8.addMemoryForWrite(extra_write_buffer_8, extra_buffer_size);
-    Serial.println("Waiting for setup...");
-    canpack.CANsetup();
-    Serial.println("CAN setup : COMPLETE");
-}
 
 #include <iostream>
 
@@ -71,7 +50,7 @@ void setup() {
 
 
 
-#define CURRENT_FLAG RIGHT
+#define CURRENT_FLAG MASTER1
 
 
 
@@ -82,6 +61,61 @@ void setup() {
 
 // =======================================================
 
+
+void setup() {
+    Serial1.addMemoryForRead(extra_read_buffer_1, extra_buffer_size);
+    Serial2.addMemoryForRead(extra_read_buffer_2, extra_buffer_size);
+    Serial3.addMemoryForRead(extra_read_buffer_3, extra_buffer_size);
+    Serial4.addMemoryForRead(extra_read_buffer_4, extra_buffer_size);
+    Serial5.addMemoryForRead(extra_read_buffer_5, extra_buffer_size);
+    Serial6.addMemoryForRead(extra_read_buffer_6, extra_buffer_size);
+    Serial7.addMemoryForRead(extra_read_buffer_7, extra_buffer_size);
+    Serial8.addMemoryForRead(extra_read_buffer_8, extra_buffer_size);
+    Serial1.addMemoryForWrite(extra_write_buffer_1, extra_buffer_size);
+    Serial2.addMemoryForWrite(extra_write_buffer_2, extra_buffer_size);
+    Serial3.addMemoryForWrite(extra_write_buffer_3, extra_buffer_size);
+    Serial4.addMemoryForWrite(extra_write_buffer_4, extra_buffer_size);
+    Serial5.addMemoryForWrite(extra_write_buffer_5, extra_buffer_size);
+    Serial6.addMemoryForWrite(extra_write_buffer_6, extra_buffer_size);
+    Serial7.addMemoryForWrite(extra_write_buffer_7, extra_buffer_size);
+    Serial8.addMemoryForWrite(extra_write_buffer_8, extra_buffer_size);
+    Serial.println("Waiting for setup...");
+    switch (CURRENT_FLAG) {
+    case MASTER1:
+        // MASTER1の場合の処理
+        int ids_m1[] = {CAN_ID_MASTERTOCENTER, CAN_ID_IFTOMASTER, CAN_ID_LEFTTOMASTER, CAN_ID_CENTERTOMASTER, CAN_ID_RIGHTTOMASTER};
+        canpack.CANsetup(ids_m1, sizeof(ids_m1));
+        break;
+    case MASTER2:
+        // MASTER2の場合の処理
+        int ids_m2[] = {CAN_ID_MASTERTOIF, CAN_ID_IFTOMASTER, CAN_ID_LEFTTOMASTER, CAN_ID_CENTERTOMASTER, CAN_ID_RIGHTTOMASTER};
+        canpack.CANsetup(ids_m2, sizeof(ids_m2));
+        break;
+    case IF:
+        // IFの場合の処理
+        int ids_if[] = {CAN_ID_MASTERTOIF, CAN_ID_MASTERTOCENTER, CAN_ID_LEFTTOMASTER, CAN_ID_CENTERTOMASTER, CAN_ID_RIGHTTOMASTER};
+        canpack.CANsetup(ids_if, sizeof(ids_if));
+        break;
+    case LEFT:
+        // LEFTの場合の処理
+        int ids_left[] = {CAN_ID_MASTERTOIF, CAN_ID_MASTERTOCENTER, CAN_ID_IFTOMASTER, CAN_ID_CENTERTOMASTER, CAN_ID_RIGHTTOMASTER};
+        canpack.CANsetup(ids_left, sizeof(ids_left));
+        break;
+    case CENTER:
+        // CENTERの場合の処理
+        // Serial.println("Executing CENTER logic...");
+        canCenterToMaster.receive_state = 1;
+        // canpack.CANsend(CAN_ID_CENTERTOMASTER, &canCenterToMaster);
+        // canpack.CANread({CAN_ID_MASTERTOIF, CAN_ID_MASTERTOCENTER, CAN_ID_LEFTTOMASTER, CAN_ID_IFTOMASTER, CAN_ID_RIGHTTOMASTER});
+        break;
+    case RIGHT:
+        int ids_right[] = {CAN_ID_MASTERTOIF, CAN_ID_MASTERTOCENTER, CAN_ID_LEFTTOMASTER, CAN_ID_CENTERTOMASTER, CAN_ID_IFTOMASTER};
+        canpack.CANsetup(ids_right, sizeof(ids_right));
+        break;
+    }
+    
+    Serial.println("CAN setup : COMPLETE");
+}
 
 int loopCount = 0;
 void loop() {
@@ -133,6 +167,7 @@ void loop() {
             canRightToMaster.receive_state = 1;
             canpack.CANsend(CAN_ID_RIGHTTOMASTER, &canRightToMaster);
             canpack.CANread({CAN_ID_MASTERTOIF, CAN_ID_MASTERTOCENTER, CAN_ID_LEFTTOMASTER, CAN_ID_CENTERTOMASTER, CAN_ID_IFTOMASTER});
+            
             break;
         case DEBUG:
             // DEBUG MODE FOR 2 BOARDS COM

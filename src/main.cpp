@@ -50,7 +50,7 @@ uint8_t extra_write_buffer_8[extra_buffer_size];
 
 
 
-#define CURRENT_FLAG MASTER1
+#define CURRENT_FLAG LEFT
 
 
 
@@ -63,6 +63,7 @@ uint8_t extra_write_buffer_8[extra_buffer_size];
 
 
 void setup() {
+    delay(1000);
     Serial1.addMemoryForRead(extra_read_buffer_1, extra_buffer_size);
     Serial2.addMemoryForRead(extra_read_buffer_2, extra_buffer_size);
     Serial3.addMemoryForRead(extra_read_buffer_3, extra_buffer_size);
@@ -80,39 +81,40 @@ void setup() {
     Serial7.addMemoryForWrite(extra_write_buffer_7, extra_buffer_size);
     Serial8.addMemoryForWrite(extra_write_buffer_8, extra_buffer_size);
     Serial.println("Waiting for setup...");
-    switch (CURRENT_FLAG) {
-    case MASTER1:
-        // MASTER1の場合の処理
-        int ids_m1[] = {CAN_ID_MASTERTOCENTER, CAN_ID_IFTOMASTER, CAN_ID_LEFTTOMASTER, CAN_ID_CENTERTOMASTER, CAN_ID_RIGHTTOMASTER};
-        canpack.CANsetup(ids_m1, sizeof(ids_m1));
-        break;
-    case MASTER2:
-        // MASTER2の場合の処理
-        int ids_m2[] = {CAN_ID_MASTERTOIF, CAN_ID_IFTOMASTER, CAN_ID_LEFTTOMASTER, CAN_ID_CENTERTOMASTER, CAN_ID_RIGHTTOMASTER};
-        canpack.CANsetup(ids_m2, sizeof(ids_m2));
-        break;
-    case IF:
-        // IFの場合の処理
-        int ids_if[] = {CAN_ID_MASTERTOIF, CAN_ID_MASTERTOCENTER, CAN_ID_LEFTTOMASTER, CAN_ID_CENTERTOMASTER, CAN_ID_RIGHTTOMASTER};
-        canpack.CANsetup(ids_if, sizeof(ids_if));
-        break;
-    case LEFT:
-        // LEFTの場合の処理
-        int ids_left[] = {CAN_ID_MASTERTOIF, CAN_ID_MASTERTOCENTER, CAN_ID_IFTOMASTER, CAN_ID_CENTERTOMASTER, CAN_ID_RIGHTTOMASTER};
-        canpack.CANsetup(ids_left, sizeof(ids_left));
-        break;
-    case CENTER:
-        // CENTERの場合の処理
-        // Serial.println("Executing CENTER logic...");
-        canCenterToMaster.receive_state = 1;
-        // canpack.CANsend(CAN_ID_CENTERTOMASTER, &canCenterToMaster);
-        // canpack.CANread({CAN_ID_MASTERTOIF, CAN_ID_MASTERTOCENTER, CAN_ID_LEFTTOMASTER, CAN_ID_IFTOMASTER, CAN_ID_RIGHTTOMASTER});
-        break;
-    case RIGHT:
-        int ids_right[] = {CAN_ID_MASTERTOIF, CAN_ID_MASTERTOCENTER, CAN_ID_LEFTTOMASTER, CAN_ID_CENTERTOMASTER, CAN_ID_IFTOMASTER};
-        canpack.CANsetup(ids_right, sizeof(ids_right));
-        break;
-    }
+    // switch (CURRENT_FLAG) {
+    // case MASTER1:
+    //     // MASTER1の場合の処理
+    //     int ids_m1[] = {CAN_ID_MASTERTOCENTER, CAN_ID_IFTOMASTER, CAN_ID_LEFTTOMASTER, CAN_ID_CENTERTOMASTER, CAN_ID_RIGHTTOMASTER};
+    //     canpack.CANsetup(ids_m1, sizeof(ids_m1));
+    //     break;
+    // case MASTER2:
+    //     // MASTER2の場合の処理
+    //     int ids_m2[] = {CAN_ID_MASTERTOIF, CAN_ID_IFTOMASTER, CAN_ID_LEFTTOMASTER, CAN_ID_CENTERTOMASTER, CAN_ID_RIGHTTOMASTER};
+    //     canpack.CANsetup(ids_m2, sizeof(ids_m2));
+    //     break;
+    // case IF:
+    //     // IFの場合の処理
+    //     int ids_if[] = {CAN_ID_MASTERTOIF, CAN_ID_MASTERTOCENTER, CAN_ID_LEFTTOMASTER, CAN_ID_CENTERTOMASTER, CAN_ID_RIGHTTOMASTER};
+    //     canpack.CANsetup(ids_if, sizeof(ids_if));
+    //     break;
+    // case LEFT:
+    //     // LEFTの場合の処理
+    //     int ids_left[] = {CAN_ID_MASTERTOIF, CAN_ID_MASTERTOCENTER, CAN_ID_IFTOMASTER, CAN_ID_CENTERTOMASTER, CAN_ID_RIGHTTOMASTER};
+    //     canpack.CANsetup(ids_left, sizeof(ids_left));
+    //     break;
+    // case CENTER:
+    //     // CENTERの場合の処理
+    //     // Serial.println("Executing CENTER logic...");
+    //     canCenterToMaster.receive_state = 1;
+    //     // canpack.CANsend(CAN_ID_CENTERTOMASTER, &canCenterToMaster);
+    //     // canpack.CANread({CAN_ID_MASTERTOIF, CAN_ID_MASTERTOCENTER, CAN_ID_LEFTTOMASTER, CAN_ID_IFTOMASTER, CAN_ID_RIGHTTOMASTER});
+    //     break;
+    // case RIGHT:
+    //     int ids_right[] = {CAN_ID_MASTERTOIF, CAN_ID_MASTERTOCENTER, CAN_ID_LEFTTOMASTER, CAN_ID_CENTERTOMASTER, CAN_ID_IFTOMASTER};
+    //     canpack.CANsetup(ids_right, sizeof(ids_right));
+    //     break;
+    // }
+    canpack.CANsetup();
     
     Serial.println("CAN setup : COMPLETE");
 }
@@ -158,8 +160,8 @@ void loop() {
             // CENTERの場合の処理
             // Serial.println("Executing CENTER logic...");
             canCenterToMaster.receive_state = 1;
-            // canpack.CANsend(CAN_ID_CENTERTOMASTER, &canCenterToMaster);
-            // canpack.CANread({CAN_ID_MASTERTOIF, CAN_ID_MASTERTOCENTER, CAN_ID_LEFTTOMASTER, CAN_ID_IFTOMASTER, CAN_ID_RIGHTTOMASTER});
+            canpack.CANsend(CAN_ID_CENTERTOMASTER, &canCenterToMaster);
+            canpack.CANread({CAN_ID_MASTERTOIF, CAN_ID_MASTERTOCENTER, CAN_ID_LEFTTOMASTER, CAN_ID_IFTOMASTER, CAN_ID_RIGHTTOMASTER});
             break;
         case RIGHT:
             // RIGHTの場合の処理

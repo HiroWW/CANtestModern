@@ -81,12 +81,14 @@ void setup() {
     Serial7.addMemoryForWrite(extra_write_buffer_7, extra_buffer_size);
     Serial8.addMemoryForWrite(extra_write_buffer_8, extra_buffer_size);
     Serial.println("Waiting for setup...");
-    canpack.CANsetup(nullptr, 0, 40, 1024, true);
+    canpack.CANsetup(3, nullptr, 0, 40, 1024, true);
     Serial.println("CAN setup : COMPLETE");
 }
 
 int loopCount = 0;
 void loop() {
+    canpack.CANsend(CAN_ID_MASTERTOCENTER, &canMasterToCenter);
+    
     canpack.CANread(2, &canCenterToMaster);
     canpack.CANread({CAN_ID_MASTERTOIF, CAN_ID_MASTERTOCENTER, CAN_ID_LEFTTOMASTER, CAN_ID_IFTOMASTER, CAN_ID_RIGHTTOMASTER});
 }
